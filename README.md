@@ -1,4 +1,5 @@
 # SDFusion: Multimodal 3D Shape Completion, Reconstruction, and Generation
+
 [[`arXiv`](https://arxiv.org/abs/2212.04493)]
 [[`Project Page`](https://yccyenchicheng.github.io/SDFusion/)]
 [[`BibTex`](#citation)]
@@ -13,7 +14,9 @@ We also use a 3D-printer to print out the generated shapes of SDFusion.
 https://user-images.githubusercontent.com/27779063/206553305-e01009f7-3131-4a6b-bda7-572699d97338.mp4
 
 # Installation
+
 We recommend using [`conda`](https://www.anaconda.com/products/distribution) to install the required python packages. You might need to change the `cudatoolkit` version to match with your GPU driver.
+
 ```
 conda create -n sdfusion python=3.8 -y && conda activate sdfusion
 conda install pytorch==1.9.0 torchvision==0.10.0 torchaudio==0.9.0 cudatoolkit=11.3 -c pytorch -c conda-forge -y
@@ -28,6 +31,7 @@ pip install h5py joblib termcolor scipy einops tqdm matplotlib opencv-python PyM
 ## Download the pretrained weight
 
 First create a foler to save the pre-trained weights. Here we assume the folder is `./saved_ckpt`. Then download the pre-trained weights from the provided links and put them in the `./saved_ckpt` folder.
+
 ```
 mkdir saved_ckpt
 
@@ -49,7 +53,9 @@ wget https://uofi.box.com/shared/static/d95l3465arc0ffley5vwmz8bscaubmhc.pth -O 
 ```
 
 ## Demo
+
 Please check the provided jupyter notebooks for how to use the code. First open the jupyter notebook server.
+
 ```
 jupyter notebook
 ```
@@ -68,11 +74,12 @@ Note that the notebooks will automatically save the generated shapes in the `./d
 
 ## Preparing the data
 
-* First, depending on your OS, you might need to install the required packages/binaries via `brew` or `apt-get` for computing the SDF given a mesh. If you cannot run the preprocessing files, please ctrl+c & ctrl+v the error message and search it on Google (usually there will be a one-line solution), or open an issue on this repo. We will try to update the README with the reported issues and their solutions under the [Issues and FAQ](#issue) section.
+- First, depending on your OS, you might need to install the required packages/binaries via `brew` or `apt-get` for computing the SDF given a mesh. If you cannot run the preprocessing files, please ctrl+c & ctrl+v the error message and search it on Google (usually there will be a one-line solution), or open an issue on this repo. We will try to update the README with the reported issues and their solutions under the [Issues and FAQ](#issue) section.
 
-* ShapeNet
-    1. Download the ShapeNetV1 dataset from the [official website](https://www.shapenet.org/). Then, extract the downloaded file and put the extracted folder in the `./data` folder. Here we assume the extracted folder is at `./data/ShapeNet/ShapeNetCore.v1`.
-    2. Run the following command for preprocessing the SDF from mesh.
+- ShapeNet
+  1. Download the ShapeNetV1 dataset from the [official website](https://www.shapenet.org/). Then, extract the downloaded file and put the extracted folder in the `./data` folder. Here we assume the extracted folder is at `./data/ShapeNet/ShapeNetCore.v1`.
+  2. Run the following command for preprocessing the SDF from mesh.
+
 ```
 mkdir -p data/ShapeNet && cd data/ShapeNet
 wget [url for downloading ShapeNetV1]
@@ -82,40 +89,46 @@ cd preprocess
 ./launchers/launch_create_sdf_shapenet.sh
 ```
 
-* BuildingNet
-    1. Download the BuildingNet dataset from the [official website](https://buildingnet.org/). After you fill out [the form](https://docs.google.com/forms/d/e/1FAIpQLSevg7fWWMYYMd1vaOdDloUX_55VOQK7PqS1DlniFV7_vuoI0w/viewform), please download the v0 version of the dataset and uncompress it under `./data`. Here we assume the extracted folder is `./data/BuildingNet_dataset_v0_1`.
-    2. Run the following command for preprocessing the SDF from mesh.
+- BuildingNet
+  1. Download the BuildingNet dataset from the [official website](https://buildingnet.org/). After you fill out [the form](https://docs.google.com/forms/d/e/1FAIpQLSevg7fWWMYYMd1vaOdDloUX_55VOQK7PqS1DlniFV7_vuoI0w/viewform), please download the v0 version of the dataset and uncompress it under `./data`. Here we assume the extracted folder is `./data/BuildingNet_dataset_v0_1`.
+  2. Run the following command for preprocessing the SDF from mesh.
+
 ```
 cd preprocess
 ./launchers/launch_create_sdf_building.sh
 cd ../
 ```
 
-* Pix3D
-    - First download the Pix3D dataset from the [official website](http://pix3d.csail.mit.edu): 
+- Pix3D
+  - First download the Pix3D dataset from the [official website](http://pix3d.csail.mit.edu):
+
 ```
 wget http://pix3d.csail.mit.edu/data/pix3d.zip -P data
 cd data
 unzip pix3d.zip
 cd ../
 ```
+
     - Then, run the following command for preprocessing the SDF from mesh.
+
 ```
 cd preprocess
 ./launchers/launch_create_sdf_pix3d.sh
 cd ../
 ```
 
-* ShapeNetRendering
-    - Run the following command for getting the rendering images, which is provided by the [3D-R2N2](http://3d-r2n2.stanford.edu/) paper.
+- ShapeNetRendering
+  - Run the following command for getting the rendering images, which is provided by the [3D-R2N2](http://3d-r2n2.stanford.edu/) paper.
+
 ```
 wget ftp://cs.stanford.edu/cs/cvgl/ShapeNetRendering.tgz -P data/ShapeNet
 cd data/ShapeNet && tar -xvf ShapeNetRendering.tgz
 cd ../../
 ```
 
-* text2shape
-    - Run the following command for setting up the text2shape dataset.
+- text2shape
+  - Run the following command for setting up the text2shape dataset.
+
 ```
 mkdir -p data/ShapeNet/text2shape
 wget http://text2shape.stanford.edu/dataset/captions.tablechair.csv -P data/ShapeNet/text2shape
@@ -124,7 +137,9 @@ cd preprocess
 ```
 
 ## Training
+
 1. Train VQVAE
+
 ```
 # ShapeNet
 ./launchers/train_vqvae_snet.sh
@@ -146,22 +161,26 @@ After training, copy the trained VQVAE checkpoint to the `./saved_ckpt` folder. 
 ```
 
 3. Train SDFusion for single-view reconstruction
+
 ```
 ./launchers/train_sdfusion_img2shape.sh
 ```
 
 4. Train SDFusion for text-guided shape generation
+
 ```
 # text2shape
 ./launchers/train_sdfusion_txt2shape.sh
 ```
 
 5. Train SDFusion for multi-modality shape generation
+
 ```
 ./launchers/train_sdfusion_mm2shape.sh
 ```
 
 6. Train the text-guided texturization
+
 ```
 coming soon!
 ```
@@ -171,6 +190,7 @@ coming soon!
 If you find this code helpful, please consider citing:
 
 1. Conference version
+
 ```BibTeX
 @inproceedings{cheng2023sdfusion,
   author={Cheng, Yen-Chi and Lee, Hsin-Ying and Tuyakov, Sergey and Schwing, Alex and Gui, Liangyan},
@@ -179,7 +199,9 @@ If you find this code helpful, please consider citing:
   year={2023},
 }
 ```
+
 2. arxiv version
+
 ```BibTeX
 @article{cheng2022sdfusion,
   author = {Cheng, Yen-Chi and Lee, Hsin-Ying and Tuyakov, Sergey and Schwing, Alex and Gui, Liangyan},
@@ -190,9 +212,11 @@ If you find this code helpful, please consider citing:
 ```
 
 # <a name="issue"></a> Issues and FAQ
+
 Coming soon!
 
 # Acknowledgement
+
 This code borrows heavely from [LDM](https://github.com/CompVis/latent-diffusion), [AutoSDF](https://github.com/yccyenchicheng/AutoSDF/), [CycleGAN](https://github.com/junyanz/CycleGAN), [stable dreamfusion](https://github.com/ashawkey/stable-dreamfusion), [DISN](https://github.com/laughtervv/DISN). We thank the authors for their great work. The followings packages are required to compute the SDF: [freeglut3](https://freeglut.sourceforge.net/), [tbb](https://www.ubuntuupdates.org/package/core/kinetic/universe/base/libtbb-dev).
 
 This work is supported in part by NSF under Grants 2008387, 2045586, 2106825, MRI 1725729, and NIFA award 2020-67021-32799. Thanks to NVIDIA for providing a GPU for debugging.
